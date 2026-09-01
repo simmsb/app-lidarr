@@ -34,17 +34,6 @@
       "datasourceTemplate": "custom.alpine",
       "depNameTemplate": "alpine_3_24/{{package}}",
       "extractVersionTemplate": "^{{{package}}}-(?<version>\\d.*)\\.apk$"
-    },
-    {
-      "customType": "regex",
-      "fileMatch": ["/Dockerfile$"],
-      "matchStrings": [
-        "ARG LIDARR_VERSION=[\"']?(?<currentValue>.+?)[\"']?\\s+"
-      ],
-      "datasourceTemplate": "github-releases",
-      "depNameTemplate": "Lidarr/Lidarr",
-      "versioningTemplate": "loose",
-      "extractVersionTemplate": "^v(?<version>.*)$"
     }
   ],
   "packageRules": [

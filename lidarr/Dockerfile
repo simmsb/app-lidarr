@@ -6,7 +6,9 @@ FROM ${BUILD_FROM}
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # Setup base
-ARG LIDARR_VERSION=3.1.0.4875
+# Lidarr plugins support only exists in the nightly (develop) branch, which is
+# not published as a GitHub release. Fetch it from the Servarr update API.
+ARG LIDARR_BRANCH=nightly
 ARG BUILD_ARCH=amd64
 ARG BUILD_VERSION=dev
 ENV XDG_CONFIG_HOME="/config/xdg"
@@ -21,13 +23,13 @@ RUN \
   elif [ "${BUILD_ARCH}" = "amd64" ]; then LIDARR_ARCH="x64"; fi \
   \
   && curl -J -L -o /tmp/lidarr.tar.gz \
-      "https://github.com/Lidarr/Lidarr/releases/download/v${LIDARR_VERSION}/Lidarr.master.${LIDARR_VERSION}.linux-musl-core-${LIDARR_ARCH}.tar.gz" \
+      "https://lidarr.servarr.com/v1/update/${LIDARR_BRANCH}/updatefile?os=linuxmusl&runtime=netcore&arch=${LIDARR_ARCH}" \
   && mkdir -p /opt/bin \
   && tar zxvf \
       /tmp/lidarr.tar.gz \
       --strip 1 -C /opt/bin \
   \
-  && echo -e "UpdateMethod=docker\nBranch=master\nPackageVersion=${BUILD_VERSION}\nPackageAuthor=Home Assistant Community Apps" \
+  && echo -e "UpdateMethod=docker\nBranch=${LIDARR_BRANCH}\nPackageVersion=${BUILD_VERSION}\nPackageAuthor=Home Assistant Community Apps" \
     > /opt/package_info \
   \
   && rm -f -r \
